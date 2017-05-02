@@ -3,12 +3,12 @@ package models;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
-import static luteusdama.LuteusDamaController.TAMANHO_CASA;
+import static luteusdama.TabuleiroController.TAMANHO_CASA;
 
 
-public class Peca extends StackPane {
+public final class Peca extends StackPane {
 
-    private TipoPeca tipo;
+    private final TipoPeca tipo;
 
     private double mouseX, mouseY;
     private double oldX, oldY;
