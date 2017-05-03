@@ -4,14 +4,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UsuarioDAO{
 
     // Atributos
     Statement declaracao;
     Connection conexao;
+    String tabela = "usuarios_novo";
     
     // Construtor
     public UsuarioDAO(Conexao conexao){
@@ -28,7 +27,7 @@ public class UsuarioDAO{
     // Métodos
     public void inserir(Usuario usuario) {
         // Gerar query de inserção
-        String query = "INSERT INTO usuarios (nome, email, senha) VALUES ('"
+        String query = "INSERT INTO " + tabela + " (nome, email, senha) VALUES ('"
                                                     + usuario.getNome() + "', '"
                                                     + usuario.getEmail() + "', '"
                                                     + usuario.getSenha() + "');";
@@ -41,7 +40,7 @@ public class UsuarioDAO{
     
     public void remover(Usuario usuario){
         // Gerar query de remoção
-        String query = "DELETE FROM usuarios WHERE id = '" + usuario.getId() + "';";
+        String query = "DELETE FROM " + tabela + " WHERE id = '" + usuario.getId() + "';";
         
         executarQuery(query);
         // Informar (log) da inserção
@@ -62,7 +61,7 @@ public class UsuarioDAO{
         Usuario usuario;
         
         // declaracar query
-        String query = "SELECT * FROM usuarios WHERE email = '" + email + "' AND senha = '" + senha + "';";
+        String query = "SELECT * FROM " + tabela + " WHERE email = '" + email + "' AND senha = '" + senha + "';";
         
         // Executar query e receber resultado
         ResultSet resultado = executarQuery(query);
