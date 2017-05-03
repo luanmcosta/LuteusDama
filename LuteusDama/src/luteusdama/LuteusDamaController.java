@@ -5,7 +5,7 @@ import view.TelaLogin;
 /**
  * @author Luan M. Costa
  */
-public class LuteusDama {
+public class LuteusDamaController {
 
     public static void main(String[] args) {
         

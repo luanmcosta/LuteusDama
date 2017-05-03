@@ -15,19 +15,19 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import models.Casa;
-import models.Peca;
-import models.ResultadoMovimento;
-import models.TipoMovimento;
-import models.TipoPeca;
-import models.Usuario;
+import models.tabuleiro.Casa;
+import models.tabuleiro.Peca;
+import models.tabuleiro.ResultadoMovimento;
+import models.tabuleiro.TipoMovimento;
+import models.tabuleiro.TipoPeca;
+import models.usuario.Usuario;
 
 public class TabuleiroController extends JApplet {
     
     // Referencias (Janelas anteriores e Jogadores)
     private Usuario jogadorUm;
     private Usuario JogadorDois;
-    private LuteusDama refLoginController;
+    private LuteusDamaController refLoginController;
     
     // Configurações de Tamanho
     public static final int TAMANHO_CASA = 80;
@@ -50,13 +50,13 @@ public class TabuleiroController extends JApplet {
     }
     
     // Constutor para um jogador
-    public TabuleiroController(Usuario jogador, LuteusDama refLoginController) throws HeadlessException {
+    public TabuleiroController(Usuario jogador, LuteusDamaController refLoginController) throws HeadlessException {
         this.jogadorUm = jogador;
         this.refLoginController = refLoginController;
     }
 
     // Construtor para dois Jogadores
-    public TabuleiroController(Usuario jogadorUm, Usuario JogadorDois, LuteusDama refLoginController) throws HeadlessException{
+    public TabuleiroController(Usuario jogadorUm, Usuario JogadorDois, LuteusDamaController refLoginController) throws HeadlessException{
         this.jogadorUm = jogadorUm;
         this.JogadorDois = JogadorDois;
         this.refLoginController = refLoginController;

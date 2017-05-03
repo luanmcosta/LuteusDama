@@ -1,4 +1,4 @@
-package models;
+package models.tabuleiro;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;

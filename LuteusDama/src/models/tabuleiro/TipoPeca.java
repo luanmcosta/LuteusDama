@@ -1,4 +1,4 @@
-package models;
+package models.tabuleiro;
 
 public enum TipoPeca {
     VERMELHA(1), BRANCA(-1);

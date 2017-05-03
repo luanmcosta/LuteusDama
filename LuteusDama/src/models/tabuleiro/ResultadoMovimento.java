@@ -1,4 +1,4 @@
-package models;
+package models.tabuleiro;
 
 public class ResultadoMovimento {
     private TipoMovimento tipo;
