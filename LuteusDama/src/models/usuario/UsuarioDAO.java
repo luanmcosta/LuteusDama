@@ -10,7 +10,7 @@ public class UsuarioDAO{
     // Atributos
     Statement declaracao;
     Connection conexao;
-    String tabela = "usuarios_novo";
+    String tabela = "usuarios";
     
     // Construtor
     public UsuarioDAO(Conexao conexao){
