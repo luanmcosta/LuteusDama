@@ -6,6 +6,11 @@
 package view;
 
 import java.awt.Toolkit;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+import models.usuario.Conexao;
+import models.usuario.Usuario;
+import models.usuario.UsuarioDAO;
 
 /**
  *
@@ -13,14 +18,23 @@ import java.awt.Toolkit;
  */
 public class TelaCadastro extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaLogin
-     */
+    // Referencias
+    private TelaLogin refTelaLogin;
+    private Usuario refUsuario;
+    private UsuarioDAO conUsuario;
+    
+    
     public TelaCadastro() {
         initComponents();
         setIcon();
+        setLocationRelativeTo(null);
     }
-
+    public TelaCadastro(TelaLogin refTelaLogin, Usuario refUsuario){
+        this();
+        this.refTelaLogin = refTelaLogin;
+        this.refUsuario = refUsuario;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,6 +58,8 @@ public class TelaCadastro extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+
+        PainelTudo.setFocusCycleRoot(true);
 
         PainelTitulo.setBackground(new java.awt.Color(0, 51, 153));
 
@@ -81,6 +97,11 @@ public class TelaCadastro extends javax.swing.JFrame {
         lblSenha1.setText("Nome");
 
         btnCadastrar.setText("Cadastrar");
+        btnCadastrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnCadastrarMouseReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout PainelConteudoLayout = new javax.swing.GroupLayout(PainelConteudo);
         PainelConteudo.setLayout(PainelConteudoLayout);
@@ -170,6 +191,36 @@ public class TelaCadastro extends javax.swing.JFrame {
     private void jtfEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfEmailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jtfEmailActionPerformed
+
+    private void btnCadastrarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadastrarMouseReleased
+        // Verificar se todos os campos estão preenchidos
+        boolean nomeOk = !jtfNome.getText().trim().equals("");
+        boolean emailOk = !jtfEmail.getText().trim().equals("");
+        boolean senhaOk = !String.valueOf(jtfSenha.getPassword()).trim().equals("");
+        
+        if(nomeOk && emailOk && senhaOk){
+            // Instanciar usuario
+            refUsuario = new Usuario(0, jtfNome.getText(), jtfEmail.getText(), String.valueOf(jtfSenha.getPassword()), 0, 0);
+            
+            // Criar conexao
+            Conexao conexao = new Conexao("localhost", "3306", "root", "", "luteusdama");
+            conUsuario = new UsuarioDAO(conexao);
+            conUsuario.inserir(refUsuario);
+            JOptionPane.showMessageDialog(this, "Cadastrado com sucesso! retornando à tela de login.");
+            conexao.desconectar();
+            
+            // Fechar tela de cadastro e retornar à de login
+            refTelaLogin.setVisible(true);
+            dispose();
+        }else{
+            JOptionPane.showMessageDialog(this, "Erro: Algum dos campos está inválido!");
+        }
+
+        
+        
+        
+        
+    }//GEN-LAST:event_btnCadastrarMouseReleased
 
     /**
      * @param args the command line arguments

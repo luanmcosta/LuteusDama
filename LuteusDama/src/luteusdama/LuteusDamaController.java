@@ -13,8 +13,6 @@ public class LuteusDamaController {
         tl.setTitle("Login - Luteus");
         tl.setVisible(true);
         
-        TabuleiroController tabController = new TabuleiroController();
-        tabController.iniciarTabuleiro();
     }
     
 }

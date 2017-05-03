@@ -6,6 +6,11 @@
 package view;
 
 import java.awt.Toolkit;
+import javax.swing.JOptionPane;
+import luteusdama.TabuleiroController;
+import models.usuario.Conexao;
+import models.usuario.Usuario;
+import models.usuario.UsuarioDAO;
 
 /**
  *
@@ -13,11 +18,14 @@ import java.awt.Toolkit;
  */
 public class TelaLogin extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaLogin
-     */
+    // Atributos (referencias)
+    Usuario usuario;
+    Conexao conexao;
+    UsuarioDAO conUsuario;
+    
     public TelaLogin() {
         initComponents();
+        setLocationRelativeTo(null);
         setIcon();
     }
 
@@ -79,6 +87,11 @@ public class TelaLogin extends javax.swing.JFrame {
         lblEsqueciMinhaSenha.setText("Esqueci minha senha");
 
         btnLogar.setText("Logar");
+        btnLogar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnLogarMouseReleased(evt);
+            }
+        });
 
         lblCadastrese.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         lblCadastrese.setForeground(new java.awt.Color(0, 0, 102));
@@ -170,10 +183,46 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jtfEmailActionPerformed
 
     private void lblCadastreseMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCadastreseMouseReleased
-        TelaCadastro tc = new TelaCadastro();
+        TelaCadastro tc = new TelaCadastro(this, usuario);
         tc.setTitle("Cadastro - Luteus");
         tc.setVisible(true);
+        dispose();
     }//GEN-LAST:event_lblCadastreseMouseReleased
+
+    private void btnLogarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLogarMouseReleased
+        // Extrair campos
+        String email = jtfEmail.getText();
+        String senha = String.valueOf(jtfSenha.getPassword());
+        
+        // Verificar campos
+        boolean emailOk = !email.trim().equals("");
+        boolean senhaOk = !senha.trim().equals("");
+        
+        if(emailOk && senhaOk){
+            // Iniciar conexão
+            conexao = new Conexao("localhost", "3306", "root", "", "luteusdama");
+            
+            // Iniciar DAO
+            conUsuario = new UsuarioDAO(conexao);
+            
+            // Consultar dados do usuario
+            usuario = conUsuario.consultar(email, senha);
+            
+            if(usuario == null){
+                JOptionPane.showMessageDialog(this, "Erro: Usuário ou senha estão incorretos.");
+            }else{
+                JOptionPane.showMessageDialog(this, "Usuario encontrado e autenticado!");
+                
+                // Iniciar tabuleiro e fechar tela de login
+                TabuleiroController tc = new TabuleiroController();
+                tc.setVisible(true);
+                tc.iniciarTabuleiro();
+                dispose();
+            }
+       
+        }else
+            JOptionPane.showMessageDialog(this, "Erro: Usuario ou senha inválido!");
+    }//GEN-LAST:event_btnLogarMouseReleased
 
     /**
      * @param args the command line arguments
