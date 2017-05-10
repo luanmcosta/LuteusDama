@@ -8,6 +8,7 @@ package view;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import luteusdama.TabuleiroController;
+import luteusdama.UsuarioController;
 import models.usuario.Conexao;
 import models.usuario.Usuario;
 import models.usuario.UsuarioDAO;
@@ -17,11 +18,6 @@ import models.usuario.UsuarioDAO;
  * @author Aluno
  */
 public class TelaLogin extends javax.swing.JFrame {
-
-    // Atributos (referencias)
-    Usuario usuario;
-    Conexao conexao;
-    UsuarioDAO conUsuario;
     
     public TelaLogin() {
         initComponents();
@@ -90,6 +86,11 @@ public class TelaLogin extends javax.swing.JFrame {
         btnLogar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 btnLogarMouseReleased(evt);
+            }
+        });
+        btnLogar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogarActionPerformed(evt);
             }
         });
 
@@ -183,7 +184,7 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jtfEmailActionPerformed
 
     private void lblCadastreseMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCadastreseMouseReleased
-        TelaCadastro tc = new TelaCadastro(this, usuario);
+        TelaCadastro tc = new TelaCadastro(this);
         tc.setTitle("Cadastro - Luteus");
         tc.setVisible(true);
         dispose();
@@ -199,30 +200,34 @@ public class TelaLogin extends javax.swing.JFrame {
         boolean senhaOk = !senha.trim().equals("");
         
         if(emailOk && senhaOk){
-            // Iniciar conexão
-            conexao = new Conexao("localhost", "3306", "root", "", "luteusdama");
+            // Tentar autenticar
+            boolean autenticado = UsuarioController.autenticar(email, senha);
             
-            // Iniciar DAO
-            conUsuario = new UsuarioDAO(conexao);
-            
-            // Consultar dados do usuario
-            usuario = conUsuario.consultar(email, senha);
-            
-            if(usuario == null){
+            if(!autenticado){
                 JOptionPane.showMessageDialog(this, "Erro: Usuário ou senha estão incorretos.");
             }else{
                 JOptionPane.showMessageDialog(this, "Usuario encontrado e autenticado!");
                 
                 // Iniciar tabuleiro e fechar tela de login
-                TabuleiroController tc = new TabuleiroController();
+                Usuario user = UsuarioController.getUsuario(email, senha);
+                
+                // Instanciar tabuleiro
+                TabuleiroController tc = new TabuleiroController(user);
+                
                 tc.setVisible(true);
                 tc.iniciarTabuleiro();
+                tc.iniciarMenu(user);
+                
                 dispose();
             }
        
         }else
             JOptionPane.showMessageDialog(this, "Erro: Usuario ou senha inválido!");
     }//GEN-LAST:event_btnLogarMouseReleased
+
+    private void btnLogarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLogarActionPerformed
 
     /**
      * @param args the command line arguments

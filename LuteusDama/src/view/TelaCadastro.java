@@ -8,9 +8,7 @@ package view;
 import java.awt.Toolkit;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
-import models.usuario.Conexao;
-import models.usuario.Usuario;
-import models.usuario.UsuarioDAO;
+import luteusdama.UsuarioController;
 
 /**
  *
@@ -20,19 +18,15 @@ public class TelaCadastro extends javax.swing.JFrame {
 
     // Referencias
     private TelaLogin refTelaLogin;
-    private Usuario refUsuario;
-    private UsuarioDAO conUsuario;
-    
     
     public TelaCadastro() {
         initComponents();
         setIcon();
         setLocationRelativeTo(null);
     }
-    public TelaCadastro(TelaLogin refTelaLogin, Usuario refUsuario){
+    public TelaCadastro(TelaLogin refTelaLogin){
         this();
         this.refTelaLogin = refTelaLogin;
-        this.refUsuario = refUsuario;
     }
     
     /**
@@ -199,19 +193,13 @@ public class TelaCadastro extends javax.swing.JFrame {
         boolean senhaOk = !String.valueOf(jtfSenha.getPassword()).trim().equals("");
         
         if(nomeOk && emailOk && senhaOk){
-            // Instanciar usuario
-            refUsuario = new Usuario(0, jtfNome.getText(), jtfEmail.getText(), String.valueOf(jtfSenha.getPassword()), 0, 0);
-            
-            // Criar conexao
-            Conexao conexao = new Conexao("localhost", "3306", "root", "", "luteusdama");
-            conUsuario = new UsuarioDAO(conexao);
-            conUsuario.inserir(refUsuario);
-            JOptionPane.showMessageDialog(this, "Cadastrado com sucesso! retornando à tela de login.");
-            conexao.desconectar();
-            
-            // Fechar tela de cadastro e retornar à de login
-            refTelaLogin.setVisible(true);
-            dispose();
+            if(UsuarioController.cadastrar(jtfNome.getText(), jtfEmail.getText(), String.valueOf(jtfSenha.getPassword()))){
+                JOptionPane.showMessageDialog(this, "Usuario cadastrado com sucesso!");
+                refTelaLogin.setVisible(true);
+                dispose();
+            }else{
+                JOptionPane.showMessageDialog(this, "Erro: Erro ao tentar cadastrar usuario!");
+            } 
         }else{
             JOptionPane.showMessageDialog(this, "Erro: Algum dos campos está inválido!");
         }

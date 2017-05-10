@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UsuarioDAO{
 
@@ -25,17 +27,20 @@ public class UsuarioDAO{
     }
 
     // Métodos
-    public void inserir(Usuario usuario) {
+    public boolean inserir(Usuario usuario){
         // Gerar query de inserção
         String query = "INSERT INTO " + tabela + " (nome, email, senha) VALUES ('"
                                                     + usuario.getNome() + "', '"
                                                     + usuario.getEmail() + "', '"
                                                     + usuario.getSenha() + "');";
                 
+        // Salvar resultado
+        ResultSet res = executarQuery(query);
         
-        executarQuery(query);
         // Informar (log) da inserção
         System.out.println("Usuario inserido com sucesso!");
+        
+        return true;
     }
     
     public void remover(Usuario usuario){

@@ -21,6 +21,7 @@ import models.tabuleiro.ResultadoMovimento;
 import models.tabuleiro.TipoMovimento;
 import models.tabuleiro.TipoPeca;
 import models.usuario.Usuario;
+import view.TelaTabuleiro;
 
 public class TabuleiroController extends JApplet {
     
@@ -28,6 +29,7 @@ public class TabuleiroController extends JApplet {
     private Usuario jogadorUm;
     private Usuario JogadorDois;
     private LuteusDamaController refLoginController;
+    private TelaTabuleiro tt;
     
     // Configurações de Tamanho
     public static final int TAMANHO_CASA = 80;
@@ -44,12 +46,19 @@ public class TabuleiroController extends JApplet {
     // Variáveis de controle
     private int pecasBrancas;
     private int pecasVermelhas;
+    private int jogadores;
+    private int jogadorAtual = 1;
     
     // Construtores
     public TabuleiroController(){    
     }
     
     // Constutor para um jogador
+    public TabuleiroController(Usuario jogador){
+        this.jogadorUm = jogador;
+        this.jogadores = 1;
+        this.jogadorAtual = 1;
+    }
     public TabuleiroController(Usuario jogador, LuteusDamaController refLoginController) throws HeadlessException {
         this.jogadorUm = jogador;
         this.refLoginController = refLoginController;
@@ -63,6 +72,18 @@ public class TabuleiroController extends JApplet {
         this.multijogador = true;
     }
     
+    // Método para iniciar a barra de status e chat
+    public void iniciarMenu(Usuario user){
+        new Thread(){
+            
+            @Override
+            public void run(){
+                tt = new TelaTabuleiro(user);
+                tt.setVisible(true);
+            }  
+        }.start();
+        
+    }
     
     // Método padrão de adaptação FX para Swing
     public void iniciarTabuleiro(){
@@ -143,6 +164,13 @@ public class TabuleiroController extends JApplet {
     }
     
     private ResultadoMovimento tentarMover(Peca peca, int newX, int newY) {
+        // Verificar se o jogador ta tentando mover a peça inimiga
+        if(jogadorAtual == 1 && peca.getTipo() == TipoPeca.BRANCA)
+            return new ResultadoMovimento(TipoMovimento.NENHUM);
+        if(jogadorAtual == 2 && peca.getTipo() == TipoPeca.VERMELHA)
+            return new ResultadoMovimento(TipoMovimento.NENHUM);
+        
+        
         if (tabuleiro[newX][newY].hasPeca() || (newX + newY) % 2 == 0) {
             return new ResultadoMovimento(TipoMovimento.NENHUM);
         }
@@ -191,6 +219,20 @@ public class TabuleiroController extends JApplet {
         fxContainer.setScene(new Scene(root));
     }
     
+    public void trocarVez(){
+        // Trocar flag de jogador atual
+        if(jogadorAtual == 1)
+            jogadorAtual = 2;
+        else
+            jogadorAtual = 1;
+        
+        // Avisar tela de menu
+        //tt.setVezJogador(jogadorAtual);
+        
+        // Atualizar dados
+        //tt.atualizarDados();
+    }
+    
     private void movimentoPeca(Peca peca, int x, int y){
         // Obter coordenas gráficas(pixels) de onde a peca está
         int newX = ajusteTabuleiro(peca.getLayoutX());
@@ -237,6 +279,10 @@ public class TabuleiroController extends JApplet {
                 grupoPecas.getChildren().remove(outraPeca);
                 break;
         }
+        
+        // Atualizar vez se realizou algum movimento
+        if(resultado.getTipo() != TipoMovimento.NENHUM)
+            trocarVez();
     }
     
 }
